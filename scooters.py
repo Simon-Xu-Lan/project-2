@@ -16,20 +16,11 @@ from config import ATLAS_PASSWORD
 # MongoDB atlas connection
 atlas_conn = f'mongodb+srv://simon:{ATLAS_PASSWORD}@cluster0.23jm7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 
-client = pymongo.MongoClient(atlas_conn)
-
-# Define database and collection
-db = client.scooters_DB
-collection = db.scooters1
-
-# Create a Polygons instance/object
-# polygons = Polygons()
 
 # Initialize recent last_updated data
 recent_last_updated = {}
 for company in compInfo:
     recent_last_updated[company["name"]] = 0
-
 
 # FUNCTIONS
 def get_scooter_data():
@@ -37,7 +28,6 @@ def get_scooter_data():
         if company["is_chosen"]:
             name = company["name"]
 
-            print("$$$ ", name)
 
             try:
                 response = requests.get(company["url"])
@@ -61,12 +51,14 @@ def get_scooter_data():
                 data = data[layer]
 
             # If last_updated changes, save data to mongoDB
-            print(f"recent{recent_last_updated[name]}")
-
+            # Process data and save data to MongoDB
             doc_sets = process_data(data, name, last_updated)
-            if last_updated > recent_last_updated[name]:
-                # Process data and save data to MongoDB
-                collection.insert_many(doc_sets)
+            with pymongo.MongoClient(atlas_conn) as client:
+                db = client.scooters_DB
+                collection = db.scooters
+                if last_updated > recent_last_updated[name]:
+                    collection.insert_many(doc_sets)
+                    print(f"save {name} data to mongoDB")
             
 
             # update recent_last_updated

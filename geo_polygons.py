@@ -1,21 +1,21 @@
 import json
 
-filepath = 'Resources/census.json'
+FILE_PATH = 'Resources/census.json'
 
 class Polygons:
     def __init__(self):
-        with open(filepath) as f:
+        with open(FILE_PATH) as f:
             self.polygons = json.load(f)["features"]
 
     def inside(self, point, vs):
         """
-     Check if the point lies inside a polygon or outside a polygon. Polygon is defined by vs.
-     Return True if inside, otherwise return false
-     point is a list including lat and log
-     vs is a list of list, inner list is a couple lat and lon, which define the edge of the polygon
-     https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
-     https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
-    """
+        Check if the point lies inside a polygon or outside a polygon. Polygon is defined by vs.
+        Return True if inside, otherwise return false
+        point is a list including lat and log
+        vs is a list of list, inner list is a couple lat and lon, which define the edge of the polygon
+        https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html
+        https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
+        """
 
         inside = False
 
